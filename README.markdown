@@ -7,6 +7,6 @@ The FastCGI C development kit is required to build this library.
 
 Build:
 
-    $ git clone git://github.com/chrisdone/haskell-json.git
-    $ cd haskell-json
+    $ git clone git://github.com/chrisdone/fastcgi.git
+    $ cd fastcgi
     $ cabal install
