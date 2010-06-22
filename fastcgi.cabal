@@ -22,6 +22,6 @@ library
   Extensions: ForeignFunctionInterface, EmptyDataDecls, ScopedTypeVariables
   Exposed-Modules: 
      Network.FastCGI
-  ghc-options: -O2 -fwarn-unused-binds -fwarn-unused-imports -fwarn-unused-matches
+  ghc-options: -O2 -Wall -Werror
   includes: fcgiapp.h
   extra-libraries: fcgi

@@ -142,8 +142,8 @@ handleRequest f ins outs _errs env =
     do
     vars <- environToTable env
     input <- sRead ins
-    output <- runCGIEnvFPS vars input (runCGIT f)
-    sPutStr outs output
+    output' <- runCGIEnvFPS vars input (runCGIT f)
+    sPutStr outs output'
 
 
 
@@ -176,7 +176,7 @@ runFastCGIConcurrent' fork m f
          testReturn "FCGX_Init" $ fcgx_init
          let loop = do waitQSem qsem
                        reqp <- acceptRequest
-                       fork (oneRequestMT f reqp
+                       _ <- fork (oneRequestMT f reqp
                              `finally`
                             (finishRequest reqp >> signalQSem qsem))
                        loop
@@ -188,9 +188,9 @@ oneRequestMT f r = do
      vars   <- environToTable env
      ins    <- peekIn r
      input  <- sRead ins
-     output <- runCGIEnvFPS vars input (runCGIT f)
+     output' <- runCGIEnvFPS vars input (runCGIT f)
      outs   <- peekOut r
-     sPutStr outs output
+     sPutStr outs output'
 --
 -- * FCGX_Reqest struct
 --
