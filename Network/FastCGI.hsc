@@ -28,7 +28,7 @@ module Network.FastCGI
 import Control.Concurrent ( forkOS )
 import Control.Concurrent.MVar
 import Control.Concurrent.QSem
-import Control.Exception as Exception (catch, finally)
+import Control.Exception
 import Control.Monad    ( liftM )
 import Data.Word (Word8)
 import Foreign          ( Ptr, castPtr, nullPtr, peekArray0 
@@ -75,7 +75,7 @@ foreign import ccall unsafe "fcgiapp.h FCGX_GetStr" fcgx_getStr
 foreign import ccall unsafe "fcgiapp.h FCGX_PutStr" fcgx_putStr
     :: CString -> CInt -> StreamPtr -> IO CInt
 
-foreign import ccall threadsafe "fcgiapp.h FCGX_Accept" fcgx_accept
+foreign import ccall safe "fcgiapp.h FCGX_Accept" fcgx_accept
     :: Ptr StreamPtr -> Ptr StreamPtr -> Ptr StreamPtr -> Ptr Environ -> IO CInt
 foreign import ccall unsafe "fcgiapp.h FCGX_Finish" fcgx_finish
     :: IO ()
@@ -155,7 +155,7 @@ foreign import ccall unsafe "fcgiapp.h FCGX_Init" fcgx_init
 foreign import ccall unsafe "fcgiapp.h FCGX_InitRequest" fcgx_initrequest
     :: Ptr FCGX_Request -> CInt -> CInt -> IO CInt
 
-foreign import ccall threadsafe "fcgiapp.h FCGX_Accept_r" fcgx_accept_r
+foreign import ccall safe "fcgiapp.h FCGX_Accept_r" fcgx_accept_r
     :: Ptr FCGX_Request -> IO CInt
 
 foreign import ccall unsafe "fcgiapp.h FCGX_Finish_r" fcgx_finish_r
@@ -180,7 +180,7 @@ runFastCGIConcurrent' fork m f
                              `finally`
                             (finishRequest reqp >> signalQSem qsem))
                        loop
-         loop `catch` \e -> log (show e)
+         loop `catch` \(e::IOException) -> log (show e)
 
 oneRequestMT :: CGI CGIResult -> Ptr FCGX_Request -> IO ()
 oneRequestMT f r = do
