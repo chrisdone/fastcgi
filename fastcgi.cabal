@@ -1,7 +1,7 @@
 Name:           fastcgi
-Version:        3001.0.2.2
+Version:        3001.0.2.3
 Copyright:      Bjorn Bringert, Lemmih
-Maintainer:     bjorn@bringert.net
+Maintainer:     Chris Done <chrisdone@gmail.com>
 License:        BSD3
 license-file:   LICENSE
 Category:       Network
