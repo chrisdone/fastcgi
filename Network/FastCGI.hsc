@@ -224,7 +224,9 @@ peekEnvp = (#peek FCGX_Request, envp)
 
 sPutStr :: StreamPtr -> Lazy.ByteString -> IO ()
 sPutStr h str =
-    mapM_ (flip BSB.unsafeUseAsCStringLen (fcgxPutCStringLen h)) (Lazy.toChunks str)
+  mapM_ (flip BSB.unsafeUseAsCStringLen (fcgxPutCStringLen h))
+        (Lazy.toChunks str)
+  `catch` \(_ :: IOException) -> return ()
 
 fcgxPutCStringLen :: StreamPtr -> CStringLen -> IO ()
 fcgxPutCStringLen h (cs,len) =
