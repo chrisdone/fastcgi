@@ -3,7 +3,7 @@
 -- Module      :  Network.FastCGI
 -- Copyright   :  (c) Bjorn Bringert 2004-2005, (c) Lemmih 2006
 -- License     :  BSD-style (see the file libraries/network/LICENSE)
--- 
+--
 -- Maintainer  :  lemmih@gmail.com
 -- Stability   :  experimental
 -- Portability :  non-portable (uses FFI)
@@ -31,10 +31,10 @@ import Control.Concurrent.QSem
 import Control.Exception
 import Control.Monad    ( liftM )
 import Data.Word (Word8)
-import Foreign          ( Ptr, castPtr, nullPtr, peekArray0 
+import Foreign          ( Ptr, castPtr, nullPtr, peekArray0
                         , alloca, mallocBytes, free, throwIfNeg_)
-import Foreign.C        ( CInt, CString, CStringLen
-                        , peekCString )
+import Foreign.C        ( CInt(..), CString, CStringLen
+                         , peekCString )
 import Foreign.Storable ( Storable (..) )
 import System.IO.Unsafe (unsafeInterleaveIO,unsafePerformIO)
 
@@ -85,7 +85,7 @@ foreign import ccall unsafe "fcgiapp.h FCGX_Finish" fcgx_finish
 -- | Handle a single CGI request, or FastCGI requests in an infinite loop.
 --   This function only returns normally if it was a CGI request.
 --   This lets you use the same program
---   as either a FastCGI or CGI program, depending on what the server 
+--   as either a FastCGI or CGI program, depending on what the server
 --   treats it as.
 runFastCGIorCGI :: CGI CGIResult -> IO ()
 runFastCGIorCGI f = do fcgi <- runOneFastCGIorCGI f
@@ -93,10 +93,10 @@ runFastCGIorCGI f = do fcgi <- runOneFastCGIorCGI f
                                else return ()
 
 -- | Handle a single FastCGI or CGI request. This lets you use the same program
---   as either a FastCGI or CGI program, depending on what the server 
+--   as either a FastCGI or CGI program, depending on what the server
 --   treats it as.
 runOneFastCGIorCGI :: CGI CGIResult
-                   -> IO Bool -- ^ True if it was a FastCGI request, 
+                   -> IO Bool -- ^ True if it was a FastCGI request,
                               --   False if CGI.
 runOneFastCGIorCGI f =
     do x <- fcgx_isCGI
@@ -243,7 +243,7 @@ fcgxGetBuf h p c =
 -- * ByteString utilities
 --
 
--- | Data.ByteString.Lazy.hGetContentsN generalized to arbitrary 
+-- | Data.ByteString.Lazy.hGetContentsN generalized to arbitrary
 --   reading functions.
 buildByteString :: (Ptr Word8 -> Int -> IO Int) -> Int -> IO Lazy.ByteString
 buildByteString f k = lazyRead >>= return . Lazy.fromChunks
